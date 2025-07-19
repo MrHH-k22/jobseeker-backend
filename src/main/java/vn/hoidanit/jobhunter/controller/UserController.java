@@ -20,7 +20,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.turkraft.springfilter.boot.Filter;
 
+import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
+import vn.hoidanit.jobhunter.domain.dto.ResCreatedUserDTO;
+import vn.hoidanit.jobhunter.domain.dto.ResUpdatedUserDTO;
+import vn.hoidanit.jobhunter.domain.dto.ResUserDTO;
 import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
@@ -40,18 +44,31 @@ public class UserController {
 
     @PostMapping("/users")
     @ApiMessage("Create a new user")
-    public ResponseEntity<User> createnewUser(@RequestBody User user) {
+    public ResponseEntity<ResCreatedUserDTO> createnewUser(@Valid @RequestBody User user) throws IdInvalidException {
+
+        boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
+
+        if (isEmailExist) {
+            throw new IdInvalidException("Email " + user.getEmail() + " already exists in the system");
+        }
 
         User newUser = this.userService.handleCreateUser(user);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(newUser);
+        ResCreatedUserDTO resUserDTO = this.userService.convertToResCreatedUserDTO(newUser);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(resUserDTO);
     }
 
     @GetMapping("/users/{id}")
     @ApiMessage("Get user by ID")
-    public ResponseEntity<User> getuserById(@PathVariable("id") long id) {
+    public ResponseEntity<ResUserDTO> getuserById(@PathVariable("id") long id) throws IdInvalidException {
         User newUser = this.userService.getUserById(id);
-        return ResponseEntity.status(HttpStatus.OK).body(newUser);
+        if (newUser == null) {
+            throw new IdInvalidException("User with ID " + id + " not found.");
+        }
+
+        ResUserDTO resUserDTO = this.userService.convertToResUserDTO(newUser);
+        return ResponseEntity.status(HttpStatus.OK).body(resUserDTO);
     }
 
     @GetMapping("/users")
@@ -86,19 +103,30 @@ public class UserController {
 
     @DeleteMapping("/users/{id}")
     @ApiMessage("Delete user by ID")
-    public ResponseEntity<String> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
-        if (id > 100) {
-            throw new IdInvalidException("Id " + id + " is invalid. Id must be less than or equal to 100.");
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) throws IdInvalidException {
+
+        User currentUser = this.userService.getUserById(id);
+        if (currentUser == null) {
+            throw new IdInvalidException("User with ID " + id + " not found.");
         }
+
         // Logic to delete user by id
         this.userService.deleteUserById(id);
         // For now, just return a success message
-        return ResponseEntity.status(HttpStatus.OK).body("User with ID " + id + " deleted successfully.");
+        return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
     @PutMapping("/users/{id}")
-    public ResponseEntity<User> updateUser(@PathVariable("id") long id, @RequestBody User entity) {
+    @ApiMessage("Update user by ID")
+    public ResponseEntity<ResUpdatedUserDTO> updateUser(@PathVariable("id") long id, @RequestBody User entity)
+            throws IdInvalidException {
         User updatedUser = this.userService.hanldeUpdateUser(id, entity);
-        return ResponseEntity.ok(updatedUser);
+        if (updatedUser == null) {
+            throw new IdInvalidException("User with ID " + id + " not found.");
+        }
+
+        ResUpdatedUserDTO resUpdatedUserDTO = this.userService.convertToResUpdatedUserDTO(updatedUser);
+
+        return ResponseEntity.ok(resUpdatedUserDTO);
     }
 }
