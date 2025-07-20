@@ -83,8 +83,6 @@ public class UserService {
         if (existingUser.isPresent()) {
             User updatedUser = existingUser.get();
             updatedUser.setName(user.getName());
-            updatedUser.setEmail(user.getEmail());
-            updatedUser.setPassword(user.getPassword());
             updatedUser.setGender(user.getGender());
             updatedUser.setAddress(user.getAddress());
             updatedUser.setAge(user.getAge());
