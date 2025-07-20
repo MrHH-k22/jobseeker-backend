@@ -26,7 +26,7 @@ public class CompanyService {
     }
 
     public ResultPaginationDTO getallCompanies(Specification<Company> sepc, Pageable pageable) {
-        Page<Company> pageCompany = this.companyRepository.findAll(pageable);
+        Page<Company> pageCompany = this.companyRepository.findAll(sepc, pageable);
         ResultPaginationDTO rs = new ResultPaginationDTO();
         Meta mt = new Meta();
 
@@ -39,8 +39,8 @@ public class CompanyService {
         return rs;
     }
 
-    public Company handleUpdateCompany(long id, Company company) {
-        Optional<Company> existingCompany = this.companyRepository.findById(id);
+    public Company handleUpdateCompany(Company company) {
+        Optional<Company> existingCompany = this.companyRepository.findById(company.getId());
         if (existingCompany.isPresent()) {
             Company updatedCompany = existingCompany.get();
             updatedCompany.setName(company.getName());

@@ -36,7 +36,7 @@ public class Company {
     // Bất cứ nơi nào sử dụng model này thì sẽ tự động cập nhật
     // các trường thông tin này
 
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
+    // @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")
     private Instant createdAt;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss a", timezone = "GMT+7")

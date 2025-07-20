@@ -116,13 +116,13 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @PutMapping("/users/{id}")
+    @PutMapping("/users")
     @ApiMessage("Update user by ID")
-    public ResponseEntity<ResUpdatedUserDTO> updateUser(@PathVariable("id") long id, @RequestBody User entity)
+    public ResponseEntity<ResUpdatedUserDTO> updateUser(@Valid @RequestBody User entity)
             throws IdInvalidException {
-        User updatedUser = this.userService.hanldeUpdateUser(id, entity);
+        User updatedUser = this.userService.hanldeUpdateUser(entity);
         if (updatedUser == null) {
-            throw new IdInvalidException("User with ID " + id + " not found.");
+            throw new IdInvalidException("User with ID " + entity.getId() + " not found.");
         }
 
         ResUpdatedUserDTO resUpdatedUserDTO = this.userService.convertToResUpdatedUserDTO(updatedUser);

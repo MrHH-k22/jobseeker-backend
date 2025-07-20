@@ -78,8 +78,8 @@ public class UserService {
         this.userRepository.deleteById(id);
     }
 
-    public User hanldeUpdateUser(long id, User user) {
-        Optional<User> existingUser = this.userRepository.findById(id);
+    public User hanldeUpdateUser(User user) {
+        Optional<User> existingUser = this.userRepository.findById(user.getId());
         if (existingUser.isPresent()) {
             User updatedUser = existingUser.get();
             updatedUser.setName(user.getName());
@@ -90,7 +90,7 @@ public class UserService {
             updatedUser.setAge(user.getAge());
             return this.userRepository.save(updatedUser);
         } else {
-            throw new IllegalArgumentException("User not found with ID: " + id);
+            throw new IllegalArgumentException("User not found with ID: " + user.getId());
         }
 
     }
@@ -146,5 +146,9 @@ public class UserService {
             currentUser.setRefreshToken(token);
             this.userRepository.save(currentUser);
         }
+    }
+
+    public User getUserByRefreshTokenAndEmail(String token, String email) {
+        return this.userRepository.findByRefreshTokenAndEmail(token, email);
     }
 }
