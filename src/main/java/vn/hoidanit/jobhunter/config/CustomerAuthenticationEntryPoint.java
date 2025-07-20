@@ -15,7 +15,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import net.bytebuddy.implementation.bytecode.Throw;
-import vn.hoidanit.jobhunter.domain.RestResponse;
+import vn.hoidanit.jobhunter.domain.response.RestResponse;
 
 @Component
 public class CustomerAuthenticationEntryPoint implements AuthenticationEntryPoint {

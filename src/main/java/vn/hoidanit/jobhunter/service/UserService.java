@@ -11,11 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import vn.hoidanit.jobhunter.domain.User;
-import vn.hoidanit.jobhunter.domain.dto.Meta;
-import vn.hoidanit.jobhunter.domain.dto.ResCreatedUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResUpdatedUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResUserDTO;
-import vn.hoidanit.jobhunter.domain.dto.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.domain.response.ResCreatedUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResUpdatedUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.repository.UserRepository;
 
 @Service
@@ -39,7 +38,7 @@ public class UserService {
         Page<User> pageUser = this.userRepository.findAll(spec, pageable);
 
         ResultPaginationDTO rs = new ResultPaginationDTO();
-        Meta mt = new Meta();
+        ResultPaginationDTO.Meta mt = new ResultPaginationDTO.Meta();
 
         mt.setPage(pageable.getPageNumber() + 1);
         mt.setPageSize(pageable.getPageSize());
