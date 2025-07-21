@@ -17,12 +17,42 @@ public class ResUserDTO {
     private int age;
     private Instant createdAt;
     private Instant updatedAt;
+    private CompanyUser company;
+
+    public static class CompanyUser {
+        private long id;
+        private String name;
+
+        public CompanyUser() {
+        }
+
+        public CompanyUser(long id, String name) {
+            this.id = id;
+            this.name = name;
+        }
+
+        public long getId() {
+            return id;
+        }
+
+        public void setId(long id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+    }
 
     public ResUserDTO() {
     }
 
     public ResUserDTO(Long id, String name, String email, GenderEnum gender, String address, int age, Instant createdAt,
-            Instant updatedAt) {
+            Instant updatedAt, CompanyUser company) {
         this.id = id;
         this.name = name;
         this.email = email;
@@ -31,6 +61,15 @@ public class ResUserDTO {
         this.age = age;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.company = company;
+    }
+
+    public CompanyUser getCompany() {
+        return company;
+    }
+
+    public void setCompany(CompanyUser company) {
+        this.company = company;
     }
 
     public Long getId() {

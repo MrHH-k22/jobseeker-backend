@@ -17,15 +17,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-
+import vn.hoidanit.jobhunter.config.DateTimeFormatConfiguration;
 import com.turkraft.springfilter.boot.Filter;
 
 import jakarta.validation.Valid;
+import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResCreatedUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUpdatedUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
+import vn.hoidanit.jobhunter.service.CompanyService;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 import vn.hoidanit.jobhunter.util.error.IdInvalidException;
@@ -36,18 +38,21 @@ import org.springframework.web.bind.annotation.PutMapping;
 @RestController
 @RequestMapping("/api/v1")
 public class UserController {
+
+    private final DateTimeFormatConfiguration dateTimeFormatConfiguration;
     private final UserService userService;
 
-    public UserController(UserService userService) {
+    public UserController(UserService userService, DateTimeFormatConfiguration dateTimeFormatConfiguration) {
         this.userService = userService;
+        this.dateTimeFormatConfiguration = dateTimeFormatConfiguration;
     }
 
     @PostMapping("/users")
     @ApiMessage("Create a new user")
     public ResponseEntity<ResCreatedUserDTO> createnewUser(@Valid @RequestBody User user) throws IdInvalidException {
 
+        // check email
         boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
-
         if (isEmailExist) {
             throw new IdInvalidException("Email " + user.getEmail() + " already exists in the system");
         }
@@ -93,8 +98,6 @@ public class UserController {
          * 
          * Pageable pageable = PageRequest.of(current, pageSize);
          */
-
-        // cách 2:
 
         ResultPaginationDTO rs = this.userService.getAllUsers(spec, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(rs);
