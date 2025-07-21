@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
 import vn.hoidanit.jobhunter.service.CompanyService;
+import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
 
 import java.util.List;
 import java.util.Optional;
@@ -36,6 +37,7 @@ public class CompanyController {
     }
 
     @PostMapping("/companies")
+    @ApiMessage("Create a new company")
     public ResponseEntity<Company> createnewCompany(@Valid @RequestBody Company entity) {
         Company newCompany = this.companyService.handleCreateCompany(entity);
 
@@ -43,6 +45,7 @@ public class CompanyController {
     }
 
     @GetMapping("/companies")
+    @ApiMessage("Fetch all companies")
     public ResponseEntity<ResultPaginationDTO> getAllCompanies(
             @Filter Specification<Company> spec, Pageable pageable) {
 
@@ -50,7 +53,15 @@ public class CompanyController {
         return ResponseEntity.status(HttpStatus.OK).body(rs);
     }
 
+    @GetMapping("/companies/{id}")
+    @ApiMessage("Fetch company by id")
+    public ResponseEntity<Company> fetchCompanyById(@PathVariable("id") long id) {
+        Optional<Company> cOptional = this.companyService.findById(id);
+        return ResponseEntity.ok().body(cOptional.get());
+    }
+
     @PutMapping("/companies")
+    @ApiMessage("Update company")
     public ResponseEntity<Company> updateCompany(@Valid @RequestBody Company entity) {
         Company updatedCompany = this.companyService.handleUpdateCompany(entity);
         return ResponseEntity.status(HttpStatus.OK).body(updatedCompany);

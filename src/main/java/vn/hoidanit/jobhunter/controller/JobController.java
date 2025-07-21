@@ -50,7 +50,7 @@ public class JobController {
             throw new IdInvalidException("Job id " + job.getId() + " is invalid");
         }
 
-        return ResponseEntity.ok().body(this.jobService.updateJob(job));
+        return ResponseEntity.ok().body(this.jobService.updateJob(job, currentJob.get()));
     }
 
     @DeleteMapping("/jobs/{id}")
