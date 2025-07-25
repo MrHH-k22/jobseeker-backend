@@ -35,8 +35,10 @@ public class FileController {
 
     @PostMapping("/files")
     @ApiMessage("upload a single file")
-    public ResponseEntity<ResUploadFileDTO> upload(@RequestParam(name = "file", required = false) MultipartFile file,
-            @RequestParam("folder") String folder) throws URISyntaxException, IOException, StorageException {
+    public ResponseEntity<ResUploadFileDTO> upload(
+            @RequestParam(name = "file", required = false) MultipartFile file,
+            @RequestParam("folder") String folder) throws IOException, StorageException {
+
         // validate
         if (file == null || file.isEmpty()) {
             throw new StorageException("File is empty. Please upload a file");
@@ -45,20 +47,49 @@ public class FileController {
         List<String> allowedExtensions = Arrays.asList("pdf", "jpg", "jpeg", "png", "doc", "docx");
         boolean isValid = allowedExtensions.stream()
                 .anyMatch(item -> fileName.toLowerCase().endsWith(item));
-
         if (!isValid) {
             throw new StorageException(
                     "File type is not supported. Please upload a file with one of the following extensions: "
                             + allowedExtensions);
         }
 
-        // create a directory if not exists
-        this.fileService.createDirectory(baseURI + folder);
-        // store file
-        String uploadFile = this.fileService.store(file, folder);
+        String uploadKey = this.fileService.store(file, folder);
 
-        ResUploadFileDTO res = new ResUploadFileDTO(uploadFile, Instant.now());
-
+        ResUploadFileDTO res = new ResUploadFileDTO(uploadKey, Instant.now());
         return ResponseEntity.ok().body(res);
     }
+
+    // @PostMapping("/files")
+    // @ApiMessage("upload a single file")
+    // public ResponseEntity<ResUploadFileDTO> upload(@RequestParam(name = "file",
+    // required = false) MultipartFile file,
+    // @RequestParam("folder") String folder) throws URISyntaxException,
+    // IOException, StorageException {
+    // // validate
+    // if (file == null || file.isEmpty()) {
+    // throw new StorageException("File is empty. Please upload a file");
+    // }
+    // String fileName = file.getOriginalFilename();
+    // List<String> allowedExtensions = Arrays.asList("pdf", "jpg", "jpeg", "png",
+    // "doc", "docx");
+    // boolean isValid = allowedExtensions.stream()
+    // .anyMatch(item -> fileName.toLowerCase().endsWith(item));
+
+    // if (!isValid) {
+    // throw new StorageException(
+    // "File type is not supported. Please upload a file with one of the following
+    // extensions: "
+    // + allowedExtensions);
+    // }
+
+    // // create a directory if not exists
+    // this.fileService.createDirectory(baseURI + folder);
+    // // store file
+    // String uploadFile = this.fileService.store(file, folder);
+
+    // ResUploadFileDTO res = new ResUploadFileDTO(uploadFile, Instant.now());
+
+    // return ResponseEntity.ok().body(res);
+    // }
+
 }
