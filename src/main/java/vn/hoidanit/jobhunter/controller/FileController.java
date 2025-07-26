@@ -1,19 +1,25 @@
 package vn.hoidanit.jobhunter.controller;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import vn.hoidanit.jobhunter.domain.response.file.ResUploadFileDTO;
 import vn.hoidanit.jobhunter.service.FileService;
 import vn.hoidanit.jobhunter.util.annotation.ApiMessage;
@@ -44,7 +50,8 @@ public class FileController {
             throw new StorageException("File is empty. Please upload a file");
         }
         String fileName = file.getOriginalFilename();
-        List<String> allowedExtensions = Arrays.asList("pdf", "jpg", "jpeg", "png", "doc", "docx");
+        List<String> allowedExtensions = Arrays.asList("pdf", "jpg", "jpeg", "png",
+                "doc", "docx");
         boolean isValid = allowedExtensions.stream()
                 .anyMatch(item -> fileName.toLowerCase().endsWith(item));
         if (!isValid) {
@@ -58,6 +65,8 @@ public class FileController {
         ResUploadFileDTO res = new ResUploadFileDTO(uploadKey, Instant.now());
         return ResponseEntity.ok().body(res);
     }
+
+    // FileService.java
 
     // @PostMapping("/files")
     // @ApiMessage("upload a single file")

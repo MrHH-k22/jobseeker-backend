@@ -9,6 +9,6 @@ public class HelloController {
 
     @GetMapping("/")
     public String getHelloWorld() {
-        return "update Hello World (H)";
+        return "Hello, World! Welcome to Job Seeker Backend!";
     }
 }

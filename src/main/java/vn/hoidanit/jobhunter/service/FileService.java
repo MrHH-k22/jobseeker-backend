@@ -15,9 +15,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.core.ResponseInputStream;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetObjectRequest;
+import software.amazon.awssdk.services.s3.model.GetObjectResponse;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
+import software.amazon.awssdk.services.s3.model.S3Object;
 
 @Service
 public class FileService {
@@ -45,7 +49,8 @@ public class FileService {
 
     public String store(MultipartFile file, String folder) throws IOException {
         // unique file name
-        String fileName = System.currentTimeMillis() + "-" + file.getOriginalFilename();
+        String fileName = System.currentTimeMillis() + "-" +
+                file.getOriginalFilename();
         String key = (baseFolder != null ? baseFolder : "") + (folder != null ? folder + "/" : "") + fileName;
 
         PutObjectRequest putOb = PutObjectRequest.builder()
@@ -54,7 +59,8 @@ public class FileService {
                 .contentType(file.getContentType())
                 .build();
 
-        getS3Client().putObject(putOb, software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
+        getS3Client().putObject(putOb,
+                software.amazon.awssdk.core.sync.RequestBody.fromBytes(file.getBytes()));
 
         // Trả về tên/key file (hoặc URL nếu bạn muốn)
         return key;
