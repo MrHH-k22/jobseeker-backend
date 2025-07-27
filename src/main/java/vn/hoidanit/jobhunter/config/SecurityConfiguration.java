@@ -60,6 +60,7 @@ public class SecurityConfiguration {
                 "/storage/**",
                 "/api/v1/companies/**",
                 "/api/v1/jobs/**",
+                "/api/v1/users/**",
         };
         http
                 .csrf(c -> c.disable())
