@@ -2,6 +2,7 @@ package vn.hoidanit.jobhunter.controller;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,6 +24,7 @@ import jakarta.validation.Valid;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.request.ReqLoginDTO;
 import vn.hoidanit.jobhunter.domain.response.ResLoginDTO;
+import vn.hoidanit.jobhunter.domain.response.ResRegisterDTO;
 import vn.hoidanit.jobhunter.repository.CompanyRepository;
 import vn.hoidanit.jobhunter.service.UserService;
 import vn.hoidanit.jobhunter.util.SecurityUtil;
@@ -119,6 +121,23 @@ public class AuthController {
                                 .ok()
                                 .header(HttpHeaders.SET_COOKIE, resCookie.toString())
                                 .body(resLoginDTO);
+        }
+
+        @PostMapping("/auth/register")
+        @ApiMessage("Register a new user")
+        public ResponseEntity<ResRegisterDTO> register(@Valid @RequestBody User user)
+                        throws IdInvalidException {
+                System.out.println(user);
+                // check email
+                boolean isEmailExist = this.userService.isEmailExist(user.getEmail());
+                if (isEmailExist) {
+                        throw new IdInvalidException("Email " + user.getEmail() + " already exists in the system");
+                }
+                User newUser = this.userService.handleCreateUser(user);
+                // create new user
+                ResRegisterDTO resUserDTO = this.userService.convertToResRegisterDTO(newUser);
+                return ResponseEntity.status(HttpStatus.CREATED).body(resUserDTO);
+
         }
 
         @GetMapping("/auth/account")

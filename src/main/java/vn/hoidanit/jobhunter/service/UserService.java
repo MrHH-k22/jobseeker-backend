@@ -13,6 +13,7 @@ import vn.hoidanit.jobhunter.controller.AuthController;
 import vn.hoidanit.jobhunter.domain.Company;
 import vn.hoidanit.jobhunter.domain.User;
 import vn.hoidanit.jobhunter.domain.response.ResCreatedUserDTO;
+import vn.hoidanit.jobhunter.domain.response.ResRegisterDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUpdatedUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResUserDTO;
 import vn.hoidanit.jobhunter.domain.response.ResultPaginationDTO;
@@ -154,6 +155,18 @@ public class UserService {
         resUserDTO.setAge(user.getAge());
         resUserDTO.setCreatedAt(user.getCreatedAt());
         resUserDTO.setUpdatedAt(user.getUpdatedAt());
+        return resUserDTO;
+    }
+
+    public ResRegisterDTO convertToResRegisterDTO(User newUser) {
+        ResRegisterDTO resUserDTO = new ResRegisterDTO();
+        resUserDTO.setId(newUser.getId());
+        resUserDTO.setName(newUser.getName());
+        resUserDTO.setEmail(newUser.getEmail());
+        resUserDTO.setGender(newUser.getGender());
+        resUserDTO.setAddress(newUser.getAddress());
+        resUserDTO.setAge(newUser.getAge());
+        resUserDTO.setCreatedAt(newUser.getCreatedAt());
         return resUserDTO;
     }
 

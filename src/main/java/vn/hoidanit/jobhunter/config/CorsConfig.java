@@ -16,7 +16,7 @@ public class CorsConfig {
         // cho phép các url nào có thể kết nối tới backend
         configuration.setAllowedOrigins(
                 Arrays.asList("http://localhost:3000", "http://localhost:4173", "http://localhost:5173",
-                        "http://your-cloudfront-id.cloudfront.net"));
+                        "http://d38fzob2p68khy.cloudfront.net/"));
         // Các method nào đc kết nối
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS")); // Allowed methods
         // các phần header được phép gửi lên
